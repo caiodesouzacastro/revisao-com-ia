@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Revisão de literatura com IA</title>
+<meta name="description" content="Caminho de trabalho, erros comuns, exemplo conferido e kit para fazer revisão de literatura e síntese de evidências com IA, com rastreabilidade entre fonte e conclusão.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0E3D5F; --navy-2:#165079; --navy-ink:#0A2C45;
+  --green:#A1C62E; --green-ink:#4D6810; --green-bg:#F0F5E1;
+  --paper:#F4F6F3; --surface:#FFFFFF; --ink:#1B2A35; --muted:#566570; --line:#D6DDE1;
+  --alert:#A9402B; --alert-bg:#FAECE8; --warn:#8A5A0B; --warn-bg:#FBF3E2;
+  --radius-s:6px; --radius-m:10px;
+  --font:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.6 var(--font);-webkit-font-smoothing:antialiased}
+a{color:var(--navy-2);text-underline-offset:3px}
+a:hover{color:var(--navy-ink)}
+:focus-visible{outline:3px solid var(--green);outline-offset:2px;border-radius:4px}
+h1,h2,h3,h4{line-height:1.2;margin:0;font-weight:650;letter-spacing:-.01em}
+p{margin:0 0 .8em}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+@media (max-width:640px){.wrap{padding:0 16px}body{font-size:16px}}
+
+/* topo */
+.top{background:var(--navy);color:#fff;padding:56px 0 40px;position:relative;overflow:hidden}
+.top h1{font-size:clamp(34px,5vw,56px);font-weight:700;letter-spacing:-.025em;max-width:16ch}
+.top p.lead{font-size:clamp(17px,2vw,20px);max-width:58ch;color:#D7E3EC;margin:18px 0 0}
+.rail-mark{position:absolute;right:24px;top:28px;opacity:.9}
+@media (max-width:860px){.rail-mark{display:none}}
+.principles{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:36px;border-top:1px solid rgba(255,255,255,.18)}
+.principles div{padding:16px 20px 0 0;font-size:15px;color:#E6EEF4}
+.principles strong{display:block;color:#fff;font-weight:600;margin-bottom:2px}
+@media (max-width:760px){.principles{grid-template-columns:1fr}.principles div{padding:12px 0 0}}
+
+/* abas */
+.tabs{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.tabs .wrap{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.tabs .wrap::-webkit-scrollbar{display:none}
+.tab{appearance:none;border:0;background:none;font:600 15px var(--font);color:var(--muted);padding:16px 14px 14px;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--navy)}
+.tab[aria-selected="true"]{color:var(--navy);border-bottom-color:var(--green)}
+section.panel{display:none;padding:44px 0 72px}
+section.panel.on{display:block}
+.intro{max-width:70ch;margin-bottom:32px}
+.intro h2{font-size:30px;margin-bottom:10px;color:var(--navy-ink)}
+.intro p{color:var(--muted)}
+
+/* caminho */
+.flow{display:grid;grid-template-columns:380px 1fr;gap:40px;align-items:start}
+@media (max-width:900px){.flow{grid-template-columns:1fr}}
+.rail{list-style:none;margin:0;padding:0;position:relative}
+.rail::before{content:"";position:absolute;left:21px;top:10px;bottom:10px;width:3px;background:var(--navy);opacity:.18;border-radius:2px}
+.st{position:relative;margin:0 0 6px;scroll-margin-top:64px}
+.st > button{all:unset;box-sizing:border-box;display:grid;grid-template-columns:46px 1fr;gap:12px;align-items:start;width:100%;padding:10px 12px 10px 0;cursor:pointer;border-radius:var(--radius-m)}
+.st > button:focus-visible{outline:3px solid var(--green)}
+.st .dot{width:44px;height:44px;border-radius:50%;background:var(--surface);border:3px solid var(--navy);display:grid;place-items:center;font:700 16px var(--font);color:var(--navy);position:relative;z-index:1;transition:background .15s,color .15s}
+.st .tt{padding-top:2px}
+.st .tt b{display:block;font-size:17px;font-weight:650;color:var(--ink)}
+.st .tt span{display:block;font-size:14.5px;color:var(--muted);line-height:1.45}
+.st.on .dot{background:var(--navy);color:#fff}
+.st.on > button{background:var(--surface);box-shadow:0 0 0 1px var(--line)}
+.st > button:hover .dot{background:var(--green-bg)}
+.st.on > button:hover .dot{background:var(--navy)}
+.dec{position:relative;display:grid;grid-template-columns:46px 1fr;gap:12px;align-items:center;margin:2px 0 10px;padding-right:12px}
+.dec .dia{width:22px;height:22px;transform:rotate(45deg);background:var(--green);margin-left:11px;position:relative;z-index:1;border-radius:3px}
+.dec p{margin:0;font-size:14.5px;line-height:1.45;color:var(--ink)}
+.dec p em{font-style:normal;font-weight:600}
+.detail{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:28px 30px;position:sticky;top:76px;max-height:calc(100vh - 96px);overflow:auto}
+@media (max-width:900px){.detail.desk{display:none}}
+.detail.inline{display:none;margin:4px 0 14px 58px;padding:20px}
+@media (max-width:900px){.st.on .detail.inline{display:block}}
+@media (max-width:520px){.detail.inline{margin-left:0}}
+.detail h3{font-size:24px;color:var(--navy-ink);margin-bottom:6px}
+.detail .goal{color:var(--muted);margin-bottom:18px}
+.blk{margin-top:20px}
+.blk h4{font-size:14px;font-weight:650;color:var(--navy);margin-bottom:8px;letter-spacing:0}
+.blk ul{margin:0;padding-left:20px}
+.blk li{margin-bottom:6px}
+.err{border-left:3px solid var(--alert);background:var(--alert-bg);padding:12px 14px;border-radius:0 var(--radius-s) var(--radius-s) 0;margin-bottom:8px}
+.err b{color:var(--alert)}
+.err p{margin:4px 0 0}
+.chk li{list-style:none;position:relative;padding-left:4px}
+.chk{padding-left:22px!important}
+.chk li::before{content:"";position:absolute;left:-20px;top:6px;width:13px;height:13px;border:2px solid var(--green-ink);border-radius:3px}
+.tools{display:flex;flex-wrap:wrap;gap:6px}
+.tools span{background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:3px 11px;font-size:14px}
+.signal li{color:var(--warn)}
+.signal li span{color:var(--ink)}
+
+/* prompt */
+.prompt{position:relative;background:#F1F4F6;border:1px solid var(--line);border-radius:var(--radius-s);margin-top:6px}
+.prompt pre{margin:0;padding:16px 16px 16px;white-space:pre-wrap;word-wrap:break-word;font:400 13.5px/1.6 var(--mono);color:#1F2E38;max-height:340px;overflow:auto}
+.copy{position:absolute;top:8px;right:8px;appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--navy);font:600 13px var(--font);padding:5px 10px;border-radius:var(--radius-s);cursor:pointer}
+.copy:hover{border-color:var(--navy)}
+.copy.done{background:var(--green-bg);border-color:var(--green-ink);color:var(--green-ink)}
+.prompt pre{padding-top:40px}
+.note{font-size:14.5px;color:var(--muted);margin-top:8px}
+
+/* erros */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.chip{appearance:none;border:1px solid var(--line);background:var(--surface);font:500 14px var(--font);color:var(--ink);padding:6px 13px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+.errs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+@media (max-width:860px){.errs{grid-template-columns:1fr}}
+.ec{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:22px 24px}
+.ec header{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-bottom:10px}
+.ec h3{font-size:19px;color:var(--alert)}
+.ec .where{font-size:13px;color:var(--muted);white-space:nowrap}
+.ec dl{margin:0;display:grid;grid-template-columns:108px 1fr;gap:8px 14px;font-size:15.5px}
+.ec dt{color:var(--muted);font-weight:500}
+.ec dd{margin:0}
+.ec .ex{background:var(--warn-bg);border-radius:var(--radius-s);padding:10px 12px;font-size:15px;margin-top:12px}
+.ec .ex b{color:var(--warn)}
+@media (max-width:520px){.ec dl{grid-template-columns:1fr}.ec dt{margin-top:6px}}
+
+/* exemplo */
+.case{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:28px 30px;margin-bottom:28px}
+@media (max-width:640px){.case,.detail{padding:20px 18px}}
+.case h3{font-size:22px;color:var(--navy-ink);margin-bottom:8px}
+.case > p{max-width:72ch}
+.tbl{width:100%;border-collapse:collapse;font-size:15px;margin-top:14px}
+.tbl th{text-align:left;font-weight:600;color:var(--navy);border-bottom:2px solid var(--navy);padding:8px 10px;vertical-align:bottom}
+.tbl td{border-bottom:1px solid var(--line);padding:10px;vertical-align:top}
+.tbl td:first-child{font-weight:500}
+.scroll{overflow-x:auto}
+.v{display:inline-block;font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.v.ok{background:var(--green-bg);color:var(--green-ink)}
+.v.no{background:var(--alert-bg);color:var(--alert)}
+.v.at{background:var(--warn-bg);color:var(--warn)}
+.quote{font-size:14.5px;color:var(--muted);font-style:italic}
+.setup{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:16px 0 6px}
+@media (max-width:860px){.setup{grid-template-columns:1fr}}
+.setup div{border-top:3px solid var(--navy);padding-top:10px;font-size:15.5px}
+.setup b{display:block;color:var(--navy);margin-bottom:4px}
+.lessons{counter-reset:l;list-style:none;padding:0;margin:14px 0 0;display:grid;gap:12px}
+.lessons li{counter-increment:l;display:grid;grid-template-columns:34px 1fr;gap:10px}
+.lessons li::before{content:counter(l);width:28px;height:28px;border-radius:50%;background:var(--green);color:var(--navy-ink);display:grid;place-items:center;font-weight:700;font-size:14px}
+
+/* ferramentas */
+.toolgrid td:first-child a{font-weight:600}
+
+/* kit */
+.kit{display:grid;gap:22px}
+.ki{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:26px 28px;display:grid;grid-template-columns:1fr 320px;gap:28px}
+@media (max-width:860px){.ki{grid-template-columns:1fr}}
+.ki h3{font-size:21px;color:var(--navy-ink);margin-bottom:6px}
+.ki .for{font-size:14px;color:var(--muted);margin-bottom:12px}
+.ki ol{margin:0;padding-left:20px}
+.ki ol li{margin-bottom:6px}
+.dl{display:inline-flex;align-items:center;gap:8px;background:var(--navy);color:#fff;text-decoration:none;font-weight:600;font-size:15px;padding:11px 16px;border-radius:var(--radius-s)}
+.dl:hover{background:var(--navy-2);color:#fff}
+.dl small{font-weight:400;opacity:.8}
+.side{border-left:1px solid var(--line);padding-left:24px}
+@media (max-width:860px){.side{border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:16px}}
+.side p{font-size:15px}
+.all{display:flex;flex-wrap:wrap;align-items:center;gap:16px;background:var(--green-bg);border:1px solid #D3E2A6;border-radius:var(--radius-m);padding:20px 24px;margin-bottom:26px}
+.all p{margin:0;flex:1 1 300px}
+
+footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--muted);font-size:14.5px}
+footer p{max-width:80ch}
+@media print{.tabs,.copy,.top .rail-mark{display:none}section.panel{display:block!important}.detail{position:static}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <svg class="rail-mark" width="420" height="300" viewBox="0 0 420 300" aria-hidden="true">
+      <path d="M20 40 H400" stroke="#fff" stroke-opacity=".22" stroke-width="3"/>
+      <g fill="#0E3D5F" stroke="#fff" stroke-width="3"><circle cx="40" cy="40" r="14"/><circle cx="120" cy="40" r="14"/><circle cx="200" cy="40" r="14"/><circle cx="280" cy="40" r="14"/><circle cx="360" cy="40" r="14"/></g>
+      <rect x="152" y="32" width="16" height="16" transform="rotate(45 160 40)" fill="#A1C62E"/>
+      <rect x="312" y="32" width="16" height="16" transform="rotate(45 320 40)" fill="#A1C62E"/>
+      <path d="M360 54 V90 H200 V54" fill="none" stroke="#A1C62E" stroke-width="2" stroke-dasharray="5 5"/>
+    </svg>
+    <h1>Revisão de literatura com IA</h1>
+    <p class="lead">Um caminho de trabalho em que cada frase da síntese pode ser conferida no estudo de origem. Com os erros que a IA comete em cada etapa, um exemplo real conferido linha a linha e um kit para usar no dia a dia.</p>
+    <div class="principles">
+      <div><strong>A fonte vem antes da IA</strong>Toda referência vem de uma base de busca ou de um documento em mãos, nunca da memória do modelo.</div>
+      <div><strong>Tudo tem página</strong>Cada informação extraída aponta para o trecho do estudo. O que não está lá é inferência e aparece marcado.</div>
+      <div><strong>A decisão é da equipe</strong>A IA aplica critérios e propõe textos. Quem define critérios, confere e conclui é a equipe.</div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="Seções">
+  <div class="wrap" role="tablist">
+    <button class="tab" role="tab" id="t-caminho" aria-controls="caminho" aria-selected="true">O caminho</button>
+    <button class="tab" role="tab" id="t-erros" aria-controls="erros" aria-selected="false">Erros e soluções</button>
+    <button class="tab" role="tab" id="t-exemplo" aria-controls="exemplo" aria-selected="false">Exemplo conferido</button>
+    <button class="tab" role="tab" id="t-ferramentas" aria-controls="ferramentas" aria-selected="false">Ferramentas</button>
+    <button class="tab" role="tab" id="t-kit" aria-controls="kit" aria-selected="false">Kit para baixar</button>
+  </div>
+</nav>
+
+<main>
+<section class="panel on" id="caminho" role="tabpanel" aria-labelledby="t-caminho">
+  <div class="wrap">
+    <div class="intro">
+      <h2>O caminho, etapa por etapa</h2>
+      <p>Nove etapas e quatro decisões. Clique em cada etapa para ver o que fazer, com que ferramenta, o prompt pronto, os sinais de alerta, os erros típicos e o que conferir antes de seguir.</p>
+    </div>
+    <div class="flow">
+      <ol class="rail" id="rail"></ol>
+      <aside class="detail desk" id="detail" aria-live="polite"></aside>
+    </div>
+  </div>
+</section>
+
+<section class="panel" id="erros" role="tabpanel" aria-labelledby="t-erros">
+  <div class="wrap">
+    <div class="intro">
+      <h2>Erros e soluções</h2>
+      <p>Os erros mais comuns quando a IA entra numa revisão. Quase todos têm cara de resposta boa: por isso cada um vem com o jeito de pegar e o jeito de evitar. Os exemplos marcados são reais, de testes conferidos contra os estudos.</p>
+    </div>
+    <div class="filters" id="filters" role="group" aria-label="Filtrar por etapa"></div>
+    <div class="errs" id="errs"></div>
+  </div>
+</section>
+
+<section class="panel" id="exemplo" role="tabpanel" aria-labelledby="t-exemplo">
+  <div class="wrap">
+    <div class="intro">
+      <h2>Um exemplo conferido linha a linha</h2>
+      <p>Antes de uma sessão de formação, fizemos as mesmas perguntas a uma ferramenta de IA generalista de cinco jeitos diferentes e conferimos cada resposta contra os estudos originais. Os resultados mostram onde o erro aparece hoje.</p>
+    </div>
+
+    <div class="case">
+      <h3>Como foi feito</h3>
+      <div class="setup">
+        <div><b>Ferramenta</b>ChatGPT, modo rápido, com a busca na web desligada. Teste de 5 de outubro de 2026.</div>
+        <div><b>Conferência</b>Cada referência buscada no Crossref, no OpenAlex e no Semantic Scholar. Cada número e trecho procurado no PDF, na página indicada.</div>
+        <div><b>Limite</b>É um retrato de um dia, com uma ferramenta. Outras ferramentas e versões erram em outros pontos. O método de conferência é o que vale levar.</div>
+      </div>
+    </div>
+
+    <div class="case">
+      <h3>Cinco testes, cinco resultados</h3>
+      <div class="scroll"><table class="tbl">
+        <thead><tr><th>Teste</th><th>O que aconteceu</th><th>Situação</th></tr></thead>
+        <tbody>
+          <tr><td>Lista aberta de estudos sobre plataformas digitais e trabalho docente, sem documentos</td><td>Cinco referências reais. Uma com o achado distorcido, outra com o país errado, e a resposta tratou de aprendizagem dos alunos, não do trabalho do professor.</td><td><span class="v no">erros sutis</span></td></tr>
+          <tr><td>Três avaliações de impacto brasileiras sobre IA generativa usada por professores, sem documentos</td><td>Disse que não conhecia três estudos que atendessem aos critérios e se recusou a inventar.</td><td><span class="v ok">recusou</span></td></tr>
+          <tr><td>Resumo de um estudo que inventamos, com autores, revista e ano</td><td>Disse que não reconhecia o estudo e não forneceu tamanho de efeito.</td><td><span class="v ok">recusou</span></td></tr>
+          <tr><td>Detalhes de um estudo real (Khan Academy em escolas brasileiras), sem documentos</td><td>Acertou título, séries, número de escolas, municípios e resultados. Errou o desenho do sorteio.</td><td><span class="v no">um erro</span></td></tr>
+          <tr><td>Triagem, extração e síntese com três PDFs anexados</td><td>Dezessete trechos literais na página certa. Um número sem fonte e um critério ampliado sem aviso.</td><td><span class="v at">dois pontos</span></td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">A lição do quadro: nos testes diretos o modelo admitiu que não sabia. O erro apareceu nos detalhes, com cara de precisão, e por isso passa na checagem rápida.</p>
+    </div>
+
+    <div class="case">
+      <h3>Sem documentos: o que errou</h3>
+      <p>Pergunta: "O que a evidência diz sobre o efeito de plataformas digitais no trabalho dos professores? Cite cinco estudos com autor, ano, revista e o principal achado de cada um."</p>
+      <div class="scroll"><table class="tbl">
+        <thead><tr><th>Estudo</th><th>O que a IA disse</th><th>O que o estudo diz</th><th>Situação</th></tr></thead>
+        <tbody>
+          <tr><td>Belo, Ferreira e Telang (2014), <a href="https://doi.org/10.1287/mnsc.2013.1770">Management Science</a></td><td>Banda larga nas escolas "não implica necessariamente melhora educacional".</td><td>O uso intenso de banda larga reduziu as notas no exame nacional do 9º ano, em Portugal. O efeito é negativo, não nulo.<br><span class="quote">"broadband has a negative impact on exam scores" (resumo)</span></td><td><span class="v no">achado deformado</span></td></tr>
+          <tr><td>Comi et al. (2017), <a href="https://doi.org/10.1016/j.econedurev.2016.11.007">Economics of Education Review</a></td><td>Uso de TIC por professores "em vários países europeus".</td><td>O estudo usa dados da Itália. O achado geral (depende de como o professor usa) confere.</td><td><span class="v no">contexto trocado</span></td></tr>
+          <tr><td>Falck, Mang e Woessmann (2018), <a href="https://doi.org/10.1111/obes.12192">Oxford Bulletin of Economics and Statistics</a></td><td>Usos integrados podem complementar o professor; outros "desviam atenção".</td><td>Efeito positivo de usar computador para pesquisar informação e negativo para praticar procedimentos, com efeito geral nulo. "Desviam atenção" não está no resumo.</td><td><span class="v at">genérico</span></td></tr>
+          <tr><td>A resposta como um todo</td><td>Cinco estudos sobre tecnologia e aprendizagem dos alunos.</td><td>A pergunta era sobre o trabalho do professor. A própria resposta admite isso no fim, mas a tabela parece responder ao que foi pedido.</td><td><span class="v no">pergunta trocada</span></td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:22px">Pergunta: "Resuma o estudo de Ferman, Finamor e Lima (2019) sobre a Khan Academy em escolas públicas brasileiras: desenho, amostra e tamanho do efeito."</p>
+      <div class="scroll"><table class="tbl">
+        <thead><tr><th>Detalhe</th><th>O que a IA disse</th><th>O que o estudo diz</th><th>Situação</th></tr></thead>
+        <tbody>
+          <tr><td>Amostra</td><td>157 escolas, cinco municípios, 5º e 9º anos</td><td>Igual (p. 3 e p. 8)</td><td><span class="v ok">confere</span></td></tr>
+          <tr><td>Intervenção</td><td>Uma aula semanal de cerca de 50 minutos no laboratório, no lugar da aula comum</td><td>Igual (p. 7)</td><td><span class="v ok">confere</span></td></tr>
+          <tr><td>Resultados</td><td>Efeito nulo na proficiência; cerca de +0,06 DP nas atitudes</td><td>Igual (p. 16 e tabela 6)</td><td><span class="v ok">confere</span></td></tr>
+          <tr><td>Desenho</td><td>"A randomização foi feita no nível da turma dentro da escola"</td><td>O sorteio definiu qual série de cada escola recebia a intervenção, com estratificação (p. 9)</td><td><span class="v no">errado</span></td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">Estudo: <a href="https://mpra.ub.uni-muenchen.de/99845/">Ferman, Finamor e Lima, "Are Public Schools Ready to Integrate Math Classes with Khan Academy?", MPRA 99845</a>. A precisão no resto dá credibilidade ao erro: quem confere só os números deixa passar.</p>
+    </div>
+
+    <div class="case">
+      <h3>Com os documentos: triagem, extração e síntese</h3>
+      <p>O mesmo tipo de ferramenta, agora com três PDFs anexados e o prompt de leitura do kit.</p>
+      <div class="setup">
+        <div><b>Pergunta</b>O uso de IA generativa pelo professor muda a aprendizagem dos alunos?</div>
+        <div><b>Critério de inclusão</b>Entra só estudo que compara professores ou turmas que usaram a ferramenta com professores ou turmas que não usaram.</div>
+        <div><b>Estudos</b><a href="https://arxiv.org/abs/2410.03017">Wang et al. (2025)</a>, ensaio randomizado com tutores nos EUA; <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7007339">Sungu, Lira e Duckworth (2026)</a>, ensaio randomizado na Turquia; <a href="https://www.oecd.org/en/publications/results-from-talis-2024-country-notes_e127f9e2-en/brazil_1e93d3b5-en.html">OCDE (2025)</a>, survey TALIS, nota do Brasil.</div>
+      </div>
+      <div class="scroll"><table class="tbl">
+        <thead><tr><th>Ponto</th><th>O que a IA fez</th><th>Conferência</th><th>Situação</th></tr></thead>
+        <tbody>
+          <tr><td>Triagem da OCDE</td><td>Excluiu: é survey, sem comparação entre quem usou e quem não usou. Citou "TALIS relies solely on self-reports" (p. 2).</td><td>Correto, com o trecho na página indicada.</td><td><span class="v ok">confere</span></td></tr>
+          <tr><td>Triagem do Wang</td><td>Incluiu, lendo o critério como "professores/tutores", e disse que aplicou o critério "literalmente".</td><td>O estudo é com tutores. O critério dizia professores. A ampliação pode ser razoável, mas foi feita sem aviso.</td><td><span class="v no">critério ampliado</span></td></tr>
+          <tr><td>Trechos literais</td><td>Dezessete citações com página.</td><td>Todas encontradas na página indicada.</td><td><span class="v ok">confere</span></td></tr>
+          <tr><td>Amostra do Wang</td><td>"Randomização inicial de 900 tutores (450/450)".</td><td>O PDF traz 450 no controle e 429 no tratamento (tabela 4, p. 19). A divisão 450/450 não aparece em lugar nenhum.</td><td><span class="v no">número sem fonte</span></td></tr>
+          <tr><td>Desfecho do Wang</td><td>Separou o ganho no teste do fim da sessão (+4 pontos percentuais) da ausência de efeito no teste de matemática do fim do ano.</td><td>Correto (p. 9 e p. 12). É exatamente o tipo de distinção que some numa leitura rápida.</td><td><span class="v ok">confere</span></td></tr>
+          <tr><td>Média e subgrupo no Sungu</td><td>Efeito médio nulo nas notas (−0,019 DP, p = 0,58); queda de 0,129 DP só entre alunos de professores abaixo da mediana; −0,111 DP na motivação.</td><td>Correto (p. 6 e p. 7), com média e subgrupo separados.</td><td><span class="v ok">confere</span></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="case">
+      <h3>O que levar deste exemplo</h3>
+      <ol class="lessons">
+        <li><span>Sem documentos, a IA serve para fechar a pergunta e montar a busca, não para listar estudos. Mesmo quando as referências existem, o achado e o contexto podem vir errados.</span></li>
+        <li><span>Com documentos e um prompt que exige página, a qualidade muda de patamar. A conferência continua necessária, mas fica rápida: basta abrir a página indicada.</span></li>
+        <li><span>Critério ambíguo vira decisão silenciosa da IA. Defina os termos antes da triagem e confira todas as decisões de fronteira.</span></li>
+        <li><span>Confira o método, não só os números. O erro mais difícil de ver estava no desenho do experimento.</span></li>
+        <li><span>Pergunte sempre: é média ou subgrupo? O desfecho foi medido quando? Essas duas perguntas pegam boa parte das sínteses que dizem mais do que os estudos.</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="panel" id="ferramentas" role="tabpanel" aria-labelledby="t-ferramentas">
+  <div class="wrap">
+    <div class="intro">
+      <h2>Ferramentas e onde cada uma entra</h2>
+      <p>Cada etapa pede uma ferramenta diferente. O erro mais comum é usar uma ferramenta de busca para sintetizar. Ninguém precisa dominar todas: vale saber o que cada uma resolve.</p>
+    </div>
+    <div class="case">
+      <div class="scroll"><table class="tbl toolgrid" id="tooltable">
+        <thead><tr><th>Ferramenta</th><th>O que faz</th><th>Quando usar</th><th>Cuidado</th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+    </div>
+    <div class="case">
+      <h3>Por etapa</h3>
+      <div class="scroll"><table class="tbl">
+        <thead><tr><th>Etapa</th><th>Ferramenta</th><th>Regra</th></tr></thead>
+        <tbody>
+          <tr><td>Pergunta e critérios</td><td>Ferramenta generalista, sem documentos</td><td>Pode ajudar a estruturar. Não pode citar estudos.</td></tr>
+          <tr><td>Busca</td><td>Bases acadêmicas, Google Acadêmico, Elicit, Consensus, Perplexity para se orientar</td><td>Registre data e string. Abra a fonte de tudo o que for usar.</td></tr>
+          <tr><td>Expandir a partir de estudos-chave</td><td>Connected Papers, Litmaps, ResearchRabbit</td><td>Mostram o entorno da literatura, não o que os estudos encontraram.</td></tr>
+          <tr><td>Triagem</td><td>Generalista com os resumos colados, ou planilha</td><td>A IA aplica os critérios; a equipe confere exclusões e dúvidas.</td></tr>
+          <tr><td>Leitura e extração</td><td>NotebookLM, ou generalista com os PDFs anexados</td><td>Só com os documentos. Página em toda informação.</td></tr>
+          <tr><td>Síntese</td><td>Generalista, a partir da tabela de extração</td><td>Cada afirmação ligada a um estudo.</td></tr>
+          <tr><td>Verificação</td><td>Generalista num chat novo; Crossref, OpenAlex ou Semantic Scholar para referências</td><td>Quem confere não viu o trabalho sendo feito.</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</section>
+
+<section class="panel" id="kit" role="tabpanel" aria-labelledby="t-kit">
+  <div class="wrap">
+    <div class="intro">
+      <h2>Kit para baixar</h2>
+      <p>Tudo o que está nesta página, pronto para usar. Escolha pelo jeito que você trabalha: a skill para quem usa o Claude, as instruções para quem prefere um projeto ou assistente personalizado em qualquer ferramenta, e o kit do agente para quem trabalha com uma pasta de PDFs no Claude Code ou no Codex.</p>
+    </div>
+    <div class="all">
+      <p><strong>Tudo de uma vez.</strong> A skill, as instruções, o kit do agente, a planilha, os prompts e o checklist num único arquivo.</p>
+      <a class="dl" href="downloads/kit-completo.zip" download>Baixar o kit completo <small>.zip</small></a>
+    </div>
+    <div class="kit">
+      <article class="ki">
+        <div>
+          <h3>Skill de revisão para o Claude</h3>
+          <p class="for">Para quem usa o Claude no navegador ou no aplicativo.</p>
+          <p>Ensina o Claude a conduzir a revisão nas sete etapas, parando ao fim de cada uma para você conferir, com página em toda informação e verificação frase por frase no final. Ela entra em ação sozinha quando você pede uma revisão, uma triagem, uma extração ou a conferência de uma síntese.</p>
+          <h4 style="font-size:15px;color:var(--navy);margin:16px 0 8px">Como instalar</h4>
+          <ol>
+            <li>Baixe o arquivo <code>revisao-de-literatura.zip</code>. Não descompacte.</li>
+            <li>Em Configurações, na área de capacidades, confirme que a execução de código está ligada. Em planos Team e Enterprise, quem administra a organização libera isso.</li>
+            <li>Vá em Personalizar, depois Skills. Clique em "+", "Criar skill" e "Enviar uma skill", e escolha o .zip.</li>
+            <li>Num chat novo, anexe os PDFs e peça, por exemplo: "Faça uma revisão destes estudos para responder à pergunta X".</li>
+          </ol>
+          <p class="note">Os nomes dos menus mudam com o tempo. A <a href="https://support.claude.com/en/articles/12512180-use-skills-in-claude">ajuda oficial sobre skills</a> tem o caminho atualizado.</p>
+        </div>
+        <div class="side">
+          <a class="dl" href="downloads/revisao-de-literatura.zip" download>Baixar a skill <small>.zip</small></a>
+          <p style="margin-top:14px">Dentro: as instruções da skill, o modelo da tabela de extração, o checklist e a lista de erros comuns.</p>
+        </div>
+      </article>
+
+      <article class="ki">
+        <div>
+          <h3>Instruções para um assistente de revisão</h3>
+          <p class="for">Para quem usa ChatGPT, Gemini ou projetos do Claude.</p>
+          <p>O mesmo método em forma de texto, para colar nas instruções de um projeto ou de um assistente personalizado. Depois disso, toda conversa naquele projeto segue as regras: sem citar de memória, página em tudo, critérios aplicados como escritos.</p>
+          <h4 style="font-size:15px;color:var(--navy);margin:16px 0 8px">Como usar</h4>
+          <ol>
+            <li>No ChatGPT: crie um projeto e cole o texto nas instruções do projeto. Ou crie um GPT e cole o texto no campo de instruções da aba de configuração.</li>
+            <li>No Gemini: crie um Gem e cole o texto nas instruções.</li>
+            <li>No Claude: crie um projeto e cole o texto nas instruções do projeto. Os PDFs podem ir para o conhecimento do projeto.</li>
+            <li>Teste com um estudo que você conhece bem e confira a resposta antes de confiar.</li>
+          </ol>
+          <p class="note">Dados pessoais ou sensíveis só entram em ferramentas aprovadas pela sua organização.</p>
+        </div>
+        <div class="side">
+          <a class="dl" href="downloads/instrucoes-assistente-revisao.md" download>Baixar as instruções <small>.md</small></a>
+          <p style="margin-top:14px">Texto curto, dentro do limite de instruções das principais ferramentas.</p>
+        </div>
+      </article>
+
+      <article class="ki">
+        <div>
+          <h3>Kit do agente para uma pasta de PDFs</h3>
+          <p class="for">Para quem usa Claude Code ou Codex.</p>
+          <p>Uma pasta pronta: você coloca os PDFs, escreve a pergunta e os critérios, e o agente faz triagem, extração, síntese e uma verificação automática que procura cada número e cada citação no texto do PDF. Tudo sai em arquivos que a equipe pode abrir e conferir.</p>
+          <h4 style="font-size:15px;color:var(--navy);margin:16px 0 8px">Como usar</h4>
+          <ol>
+            <li>Descompacte <code>kit-agente-revisao.zip</code>.</li>
+            <li>Preencha <code>pergunta.md</code> e <code>criterios.md</code>.</li>
+            <li>Coloque os PDFs em <code>pdfs/</code>, com nomes curtos como <code>Autor_Ano.pdf</code>.</li>
+            <li>Abra a pasta no Claude Code ou no Codex e escreva: "Rode a revisão seguindo o AGENTS.md".</li>
+            <li>O agente para ao fim de cada etapa. Confira e responda "ok" para seguir.</li>
+            <li>Comece a conferência por <code>saida/verificacao.md</code>.</li>
+          </ol>
+        </div>
+        <div class="side">
+          <a class="dl" href="downloads/kit-agente-revisao.zip" download>Baixar o kit do agente <small>.zip</small></a>
+          <p style="margin-top:14px">O Claude Code lê o <code>CLAUDE.md</code>, que aponta para o <code>AGENTS.md</code>. O Codex lê o <code>AGENTS.md</code> direto.</p>
+        </div>
+      </article>
+
+      <article class="ki">
+        <div>
+          <h3>Planilha de revisão</h3>
+          <p class="for">Para registrar o trabalho, com ou sem IA.</p>
+          <p>Quatro abas: registro de buscas, triagem, extração e verificação. As colunas de decisão têm listas prontas (entra, não entra, dúvida; mede efeito, revisão, descritivo; média ou subgrupo), e há uma coluna para quem conferiu cada linha.</p>
+        </div>
+        <div class="side">
+          <a class="dl" href="downloads/tabela-extracao-revisao.xlsx" download>Baixar a planilha <small>.xlsx</small></a>
+        </div>
+      </article>
+
+      <article class="ki">
+        <div>
+          <h3>Prompts por etapa e checklist</h3>
+          <p class="for">Para copiar e colar em qualquer ferramenta.</p>
+          <p>Os sete prompts da aba O caminho num só arquivo, e o checklist de verificação completo, organizado por fontes, afirmações, efeito, números, critérios e dados.</p>
+        </div>
+        <div class="side">
+          <a class="dl" href="downloads/prompts-por-etapa.md" download>Baixar os prompts <small>.md</small></a>
+          <p></p>
+          <a class="dl" href="downloads/checklist-verificacao.md" download>Baixar o checklist <small>.md</small></a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Material de apoio a uma formação sobre uso de IA na produção de evidências, outubro de 2026. Os exemplos são respostas reais de uma ferramenta de IA, conferidas contra os estudos originais. Ferramentas e modelos mudam rápido; o método de conferência é o que vale levar.</p>
+  </div>
+</footer>
+
+<script>
+const P = {
+pergunta:`Quero fazer uma revisão rápida de literatura sobre o tema abaixo. Antes de buscar qualquer estudo, me ajude a fechar a pergunta. Proponha:
+- a pergunta principal, em uma frase;
+- população, intervenção ou exposição, comparação e desfecho;
+- se a pergunta é de efeito (pede estudos que comparam quem recebeu com quem não recebeu) ou de descrição (aceita surveys e estudos qualitativos);
+- até três perguntas secundárias;
+- os termos que podem ser lidos de mais de um jeito e precisam de definição.
+Não cite estudos.
+Tema: [descreva o tema e para que a revisão vai servir]`,
+criterios:`Com base na pergunta abaixo, proponha critérios de inclusão e de exclusão: tipo de estudo, população, intervenção, desfecho, período, idioma e tipo de publicação.
+Para cada termo que possa ser lido de mais de um jeito, dê uma definição e um caso de fronteira, dizendo se ele entra ou não.
+Não cite estudos.
+Pergunta: [cole a pergunta fechada]`,
+busca:`Monte a estratégia de busca para a pergunta abaixo:
+- uma string booleana em inglês e outra em português, com sinônimos;
+- a adaptação para ERIC, Scopus e Google Acadêmico;
+- repositórios de avaliação onde vale procurar.
+Não liste estudos. Só a estratégia.
+Pergunta: [cole a pergunta]`,
+triagem:`Trabalhe apenas com os títulos e resumos abaixo.
+Para cada um, aplique os critérios de inclusão e responda: entra, não entra ou dúvida. Justifique com o trecho do resumo.
+Se um critério não puder ser avaliado pelo resumo, responda dúvida.
+Não reinterprete os critérios. Se achar que algum está ambíguo, aponte a ambiguidade em vez de decidir.
+Critérios: [cole os critérios]
+Títulos e resumos: [cole a lista]`,
+extracao:`Trabalhe apenas com os documentos anexados. Não use conhecimento externo e não cite estudos que não estejam anexados.
+Para cada estudo, preencha uma tabela com as colunas: estudo, pergunta, desenho (mede efeito com comparação, revisão ou descritivo), amostra e contexto, desfecho e quando foi medido, efeito encontrado (houve efeito, não houve ou inconclusivo, com a magnitude), se o resultado é da média ou de um subgrupo, limitações declaradas pelos autores, exemplo prático e página de cada informação.
+Se a informação não estiver no documento, escreva "não informado". Não arredonde nem converta números.`,
+sintese:`Com base apenas na tabela de extração abaixo, escreva uma síntese de até uma página que responda à pergunta: [cole a pergunta].
+Organize por dimensão. Em cada afirmação:
+- termine com o estudo de origem entre parênteses;
+- deixe claro se vem de estudo que mede efeito, de revisão ou de estudo descritivo;
+- diga se o resultado é da média ou de um subgrupo, e se o desfecho é de curto prazo ou final.
+Quando um achado depender de um único estudo, diga isso.
+Marque como [inferência] tudo o que não estiver na tabela.
+Tabela: [cole a tabela]`,
+verificacao:`Abaixo está uma síntese, e os estudos em que ela se baseia estão anexados.
+Confira a síntese frase por frase. Para cada frase, mostre o trecho literal do estudo que a sustenta e a página, e classifique: sustentada; parcialmente sustentada (diga o que falta); não sustentada; inferência não marcada.
+Aponte também: números que não aparecem nos estudos; resultados de subgrupo apresentados como média; desfechos de curto prazo apresentados como resultado final; estudos descritivos usados como prova de efeito.
+Não reescreva a síntese.
+Síntese: [cole a síntese]`
+};
+
+const STEPS = [
+{id:1, t:"Pergunta", s:"Fechar o que se quer saber antes de buscar qualquer coisa",
+ goal:"Uma pergunta em uma frase, com população, intervenção, comparação e desfecho, e a decisão sobre que tipo de evidência responde a ela.",
+ fazer:["Escreva a pergunta principal em uma frase e para que a revisão vai servir.","Identifique população, intervenção ou exposição, comparação e desfecho.","Decida se a pergunta é de efeito (o que muda quando se faz X) ou de descrição (quem usa, como usa, o que pensa).","Liste os termos ambíguos: professor inclui tutor? Plataforma inclui aplicativo de mensagem?"],
+ tools:["Ferramenta generalista, sem documentos"], prompt:"pergunta",
+ sinais:["A pergunta cabe em qualquer tema ('o que se sabe sobre tecnologia na educação').","A pergunta já embute a resposta ('por que X funciona')."],
+ erros:[["Pergunta ampla demais","A busca volta milhares de estudos e a síntese vira lista. Corte por população, desfecho ou período."],["Pergunta que pressupõe a resposta","A IA procura razões em vez de testar se funciona. Reescreva de forma neutra: 'qual o efeito de X sobre Y'."]],
+ conferir:["A pergunta cabe em uma frase.","Está decidido se é de efeito ou de descrição.","Os termos ambíguos têm definição."]},
+{dec:"A pergunta é de <em>efeito</em> ou de <em>descrição</em>? Se for de efeito, só entram estudos que comparam quem recebeu com quem não recebeu. Surveys e entrevistas ficam como contexto, nunca como prova."},
+{id:2, t:"Critérios de inclusão", s:"Escrever as regras de entrada antes de ver os estudos",
+ goal:"Critérios de inclusão e exclusão escritos, com definição de cada termo ambíguo e exemplos de casos de fronteira.",
+ fazer:["Defina tipo de estudo, população, intervenção, desfecho, período, idioma e tipo de publicação.","Para cada termo ambíguo, escreva a definição e um caso de fronteira, dizendo se entra.","Decida o que fazer com working papers, relatórios de organizações e material de fornecedores.","Guarde os critérios num arquivo: eles vão ser colados na triagem."],
+ tools:["Ferramenta generalista, sem documentos","Planilha de revisão"], prompt:"criterios",
+ sinais:["Critério que usa palavras como 'relevante' ou 'de qualidade' sem dizer o que significam.","Critérios escritos depois de ver os estudos."],
+ erros:[["Critério vago vira decisão da IA","Se o critério diz 'professores' e aparece um estudo com tutores, a IA decide sozinha e pode nem avisar. Defina o termo antes."],["Critérios ajustados aos estudos encontrados","O critério passa a justificar a lista em vez de filtrá-la. Escreva e registre antes da busca."]],
+ conferir:["Cada critério pode ser avaliado com sim ou não.","Os termos ambíguos têm caso de fronteira.","Os critérios estão registrados com data."]},
+{id:3, t:"Busca", s:"Encontrar estudos candidatos em bases e repositórios",
+ goal:"Uma lista de estudos candidatos, vinda de buscas registradas, que outra pessoa conseguiria refazer.",
+ fazer:["Monte strings em inglês e português, com sinônimos.","Busque em bases acadêmicas (ERIC, Scopus, Web of Science, SciELO, Google Acadêmico) e em repositórios de avaliação (EEF, J-PAL, 3ie, What Works Clearinghouse, OCDE, Banco Mundial).","Registre data, base, string, filtros e número de resultados.","Use ferramentas de busca com IA para se orientar, sempre abrindo a fonte."],
+ tools:["Google Acadêmico","Elicit","Consensus","Perplexity","Bases e repositórios"], prompt:"busca",
+ sinais:["A lista de estudos veio de uma conversa com a IA, sem busca em base.","Nenhuma busca está registrada."],
+ erros:[["Pedir estudos à IA de memória","Mesmo quando as referências existem, o achado e o contexto podem vir errados. Use a IA para montar a busca, não para fazer a lista."],["Resumo de ferramenta de busca usado como síntese","O parágrafo gerado pela ferramenta vira conclusão sem que ninguém leia os estudos. Use o resumo só para decidir o que abrir."]],
+ conferir:["Toda referência veio de uma base ou repositório.","As buscas estão registradas.","Houve busca em português e em inglês."]},
+{dec:"Já existe um <em>estudo-chave</em> sobre o tema? Se sim, use-o como semente no Connected Papers, no Litmaps ou no ResearchRabbit para achar o que a busca por palavra-chave deixou de fora. Os estudos novos voltam para a triagem."},
+{id:4, t:"Triagem", s:"Decidir o que entra, primeiro pelo resumo, depois pelo texto",
+ goal:"Uma decisão registrada para cada estudo (entra, não entra ou dúvida), com o critério que decidiu e o trecho que justifica.",
+ fazer:["Primeira passada por título e resumo. Na dúvida, o estudo segue para o texto completo.","Peça à IA que aplique os critérios com o trecho que justifica cada decisão.","Confira todas as exclusões, todas as dúvidas e uma amostra das inclusões.","Segunda passada no texto completo para os que passaram."],
+ tools:["Ferramenta generalista com os resumos colados","Planilha de revisão (aba Triagem)"], prompt:"triagem",
+ sinais:["A IA incluiu um estudo 'lendo o critério de forma ampla'.","Decisões sem trecho que justifique.","A IA diz que aplicou o critério 'literalmente' e o resultado parece estranho."],
+ erros:[["Critério ampliado sem aviso","No exemplo conferido, a IA leu 'professores' como 'professores/tutores' para incluir um estudo e disse que aplicou o critério literalmente. Peça que aponte ambiguidades em vez de decidir."],["Exclusão por palavra","O estudo sai porque o resumo usa outro termo. Confira as exclusões, não só as inclusões."]],
+ conferir:["Toda decisão tem critério e trecho.","Todas as exclusões e dúvidas foram conferidas por alguém da equipe.","Os casos de fronteira foram decididos pela equipe."]},
+{id:5, t:"Textos completos", s:"Conseguir o estudo inteiro e saber qual versão é",
+ goal:"O PDF de cada estudo incluído, com a versão identificada.",
+ fazer:["Procure a versão de acesso aberto em fontes oficiais: site do periódico, NBER, SSRN, arXiv, repositórios institucionais, sites das organizações.","Registre se a versão é working paper, artigo publicado ou relatório. Os números podem mudar entre versões.","Dê nomes curtos aos arquivos (Autor_Ano.pdf)."],
+ tools:["Google Acadêmico (link 'Todas as versões')","Sites oficiais"], prompt:null,
+ sinais:["A extração está sendo feita a partir do resumo ou de um texto gerado pela IA.","Números citados de uma versão e conferidos em outra."],
+ erros:[["Resumo da IA no lugar do estudo","Se não há texto completo, o estudo não entra na extração. Registre a falta e siga."],["Versão trocada","O working paper e o artigo publicado podem ter amostras e números diferentes. Registre qual você leu."]],
+ conferir:["Cada estudo incluído tem PDF.","A versão de cada um está registrada."]},
+{dec:"Tem o <em>texto completo</em>? Se não, o estudo fica fora da extração e a falta fica registrada. Resumo, notícia ou texto gerado pela IA não substituem o estudo."},
+{id:6, t:"Leitura e extração", s:"Tirar de cada estudo o que ele de fato mostra, com página",
+ goal:"Uma tabela de extração em que toda informação tem página, e o que não está no estudo aparece como 'não informado'.",
+ fazer:["Carregue os PDFs e diga explicitamente que a resposta deve se basear só neles.","Use a tabela padrão: desenho, amostra e contexto, desfecho e quando foi medido, efeito, média ou subgrupo, limitações, exemplo prático, página.","Classifique o desenho de cada estudo: mede efeito com comparação, revisão ou descritivo.","Confira cada número no PDF, na página indicada."],
+ tools:["NotebookLM","Claude, ChatGPT ou Gemini com os PDFs anexados","Planilha de revisão (aba Extração)"], prompt:"extracao",
+ sinais:["Número sem página.","Magnitude 'arredondada' ou convertida.","Detalhe de método muito específico que você não encontra no texto."],
+ erros:[["Número sem fonte","No exemplo conferido, a IA trouxe uma divisão '450/450' de tutores que não está no PDF, que traz 450 e 429. Procure cada número exato no documento."],["Subgrupo apresentado como média","Um efeito que só aparece entre alunos de professores de menor desempenho vira 'o efeito'. Exija a coluna média ou subgrupo."],["Desfecho de curto prazo lido como resultado final","Ganho no teste do fim da sessão não é o mesmo que aprendizagem no fim do ano. Exija a coluna 'quando foi medido'."],["Detalhe errado com cara de precisão","A resposta acerta números e erra o desenho do experimento. Confira a seção de método, não só a de resultados."]],
+ conferir:["Toda célula preenchida tem página.","Os números conferem com o PDF.","Média e subgrupo estão separados.","Está claro quando cada desfecho foi medido."]},
+{id:7, t:"Síntese", s:"Juntar os achados sem perder de onde cada um veio",
+ goal:"Uma síntese curta, organizada por dimensão, em que cada afirmação aponta para um estudo e o peso da evidência fica visível.",
+ fazer:["Escreva a partir da tabela de extração, não dos PDFs soltos nem da memória.","Organize por dimensão da pergunta, não por estudo.","Separe o que é efeito (estudos com comparação) do que é uso e percepção (surveys).","Diga quando um achado depende de um único estudo.","Marque como inferência tudo o que não estiver na tabela."],
+ tools:["Ferramenta generalista, com a tabela colada"], prompt:"sintese",
+ sinais:["Frases sem estudo de origem.","Percentual de uso apresentado como prova de que algo funciona.","Achado de um estudo escrito como consenso."],
+ erros:[["Survey tratado como efeito","'56% dos professores usam IA' não diz se a IA melhora alguma coisa. Na síntese, uso e percepção ficam separados de efeito."],["Generalização","Um achado de um país, uma etapa ou um tipo de ferramenta vira regra geral. Diga o contexto de cada achado."],["Simplificação que muda o sentido","'Efeito negativo' vira 'não necessariamente positivo'. Compare cada frase com a linha da tabela."]],
+ conferir:["Cada afirmação tem estudo de origem.","Efeito e percepção estão separados.","Achados de estudo único estão sinalizados.","Inferências estão marcadas."]},
+{id:8, t:"Verificação", s:"Conferir a síntese frase por frase contra os estudos",
+ goal:"Uma síntese em que cada frase foi conferida no estudo, de preferência por quem não a escreveu.",
+ fazer:["Abra um chat novo, sem o histórico da síntese, anexe os PDFs e peça a conferência frase por frase.","Peça o trecho literal e a página de cada frase.","Confira referências no Crossref, OpenAlex ou Semantic Scholar.","Passe o checklist de verificação inteiro.","Peça a uma segunda pessoa para conferir os números e as mensagens principais."],
+ tools:["Ferramenta generalista num chat novo","Crossref, OpenAlex, Semantic Scholar","Checklist de verificação"], prompt:"verificacao",
+ sinais:["A mesma conversa que escreveu a síntese está conferindo a síntese.","Ninguém além do autor abriu os estudos."],
+ erros:[["A IA confere o próprio trabalho","No mesmo chat, a IA tende a confirmar o que já escreveu. Use um chat novo e, quando der, outra ferramenta."],["Conferir só os números","Erros de desenho, contexto e sentido passam. Use o checklist completo."]],
+ conferir:["Toda frase está classificada (sustentada, parcial, não sustentada, inferência).","As frases não sustentadas foram corrigidas ou cortadas.","O checklist foi passado."]},
+{dec:"A síntese <em>passou no checklist</em>? Se não, volte à extração: o problema quase sempre está numa linha da tabela, não na redação."},
+{id:9, t:"Registro", s:"Deixar o caminho refazível e o aprendizado guardado",
+ goal:"Uma nota de método curta e os prompts que funcionaram guardados para a próxima revisão.",
+ fazer:["Escreva a nota de método: bases, período, critérios, número de estudos, quem fez triagem e extração, limitações.","Diga onde a IA entrou e como foi conferida.","Guarde os prompts que funcionaram e os ajustes feitos.","Registre a ferramenta, o modelo e a data."],
+ tools:["Planilha de revisão","Pasta compartilhada da equipe"], prompt:null,
+ sinais:["Ninguém consegue dizer quais bases foram usadas.","O prompt que deu certo se perdeu no histórico de alguém."],
+ erros:[["Método invisível","Sem registro, ninguém sabe o que a síntese cobre e o que deixou de fora. A nota de método é curta e obrigatória."]],
+ conferir:["A nota de método está escrita.","O uso de IA está declarado.","Os prompts estão guardados num lugar comum."]}
+];
+
+const ERRS = [
+{n:"Referência inventada", e:3, como:"Autor, ano, título e revista plausíveis para um estudo que não existe.", pegar:"Busque o título no Google Acadêmico, no Crossref ou no OpenAlex.", evitar:"Nunca peça listas de estudos de memória. Toda referência vem de uma busca ou de um documento.", ex:"Nos testes diretos (estudo inventado, avaliações brasileiras inexistentes) o modelo recusou. O risco cresce em listas longas e perguntas muito específicas."},
+{n:"Estudo real, achado deformado", e:3, como:"A referência existe e passa na checagem rápida, mas o achado atribuído não é o do estudo.", pegar:"Leia o resumo e a tabela de resultados do estudo, não só o título.", evitar:"Achado só entra a partir do texto do estudo, com página.", ex:"Belo, Ferreira e Telang (2014) encontram efeito negativo da banda larga nas notas. A IA escreveu que banda larga 'não implica necessariamente melhora'.", real:true},
+{n:"Contexto trocado", e:6, como:"País, etapa de ensino ou população diferentes dos do estudo.", pegar:"Confira a seção de dados e amostra.", evitar:"Inclua amostra e contexto na tabela de extração, com página.", ex:"Comi et al. (2017) é um estudo sobre a Itália. A IA o situou em 'vários países europeus'.", real:true},
+{n:"Detalhe errado com cara de precisão", e:6, como:"A resposta acerta números e nomes e erra o desenho do experimento, o nível da randomização ou a amostra.", pegar:"Confira a seção de método, não só os resultados.", evitar:"Não use resumo de memória de nenhum estudo. Leia o método no PDF.", ex:"No estudo da Khan Academy em escolas brasileiras, a IA acertou escolas, municípios, séries e resultados, e disse que o sorteio foi entre turmas. O estudo sorteou qual série de cada escola recebia a intervenção.", real:true},
+{n:"Pergunta trocada", e:1, como:"A resposta trata de uma pergunta vizinha e parece responder ao que foi pedido.", pegar:"Releia a pergunta antes de ler a resposta.", evitar:"Peça que a IA diga logo no início se os documentos respondem à pergunta ou a outra.", ex:"Perguntamos sobre o trabalho dos professores. A IA respondeu com cinco estudos sobre aprendizagem dos alunos e só admitiu isso no fim.", real:true},
+{n:"Critério ampliado sem aviso", e:4, como:"A triagem inclui casos que o critério escrito não cobre.", pegar:"Confira todas as decisões de fronteira e todas as exclusões.", evitar:"Defina os termos ambíguos antes e peça que a IA aponte ambiguidades em vez de decidir.", ex:"O critério dizia professores. A IA incluiu um estudo com tutores, lendo 'professores/tutores', e afirmou ter aplicado o critério literalmente.", real:true},
+{n:"Número sem fonte", e:6, como:"Um número plausível que não está em lugar nenhum do documento.", pegar:"Procure o número exato no PDF, com Ctrl+F.", evitar:"Exija página para todo número e proíba arredondar ou completar.", ex:"A IA trouxe '450/450' tutores. O PDF traz 450 e 429.", real:true},
+{n:"Survey tratado como efeito", e:7, como:"Percentual de uso ou de percepção apresentado como prova de que algo funciona.", pegar:"Olhe o desenho de cada estudo citado numa frase sobre efeito.", evitar:"Classifique o desenho na extração e separe efeito de percepção na síntese."},
+{n:"Subgrupo apresentado como média", e:6, como:"Efeito que só aparece num grupo vira 'o efeito' do estudo.", pegar:"Procure 'entre', 'among', 'subgroup' e 'heterogeneity' na seção de resultados.", evitar:"Coluna média ou subgrupo na tabela de extração.", ex:"Num dos estudos do exemplo, o efeito médio nas notas é nulo e a queda de 0,129 DP aparece só entre alunos de professores abaixo da mediana. A IA separou corretamente quando teve o PDF."},
+{n:"Curto prazo lido como resultado final", e:6, como:"Ganho medido logo após a intervenção apresentado como aprendizagem.", pegar:"Verifique quando cada desfecho foi medido.", evitar:"Coluna 'desfecho e quando foi medido' na extração.", ex:"Um estudo com tutores mostra +4 pontos percentuais no teste do fim da sessão e nenhum efeito significativo no teste de matemática do fim do ano."},
+{n:"Resumo de ferramenta usado como síntese", e:3, como:"O parágrafo gerado pela ferramenta de busca vira a conclusão, sem leitura dos estudos.", pegar:"Pergunte quem abriu cada estudo citado.", evitar:"Use o resumo da ferramenta só para decidir o que abrir."},
+{n:"Versão trocada", e:5, como:"Números do working paper citados como se fossem do artigo publicado, ou o contrário.", pegar:"Compare o título, a data e a amostra da versão lida com a referência.", evitar:"Registre a versão de cada estudo na extração."},
+{n:"Simplificação que muda o sentido", e:7, como:"Ao encurtar, 'efeito negativo' vira 'não necessariamente positivo', ou 'em um estudo' vira 'a evidência mostra'.", pegar:"Compare cada frase da síntese com a linha da tabela.", evitar:"Peça que a síntese diga quando o achado vem de um único estudo."},
+{n:"A IA confere o próprio trabalho", e:8, como:"No mesmo chat, a verificação confirma o que a síntese já dizia.", pegar:"Veja se a verificação apontou algum problema. Zero problemas é sinal de alerta.", evitar:"Verifique num chat novo, sem o histórico, ou com outra ferramenta e outra pessoa."},
+{n:"Pergunta que embute a resposta", e:1, como:"'Por que X melhora Y' leva a IA a procurar razões, não a testar se melhora.", pegar:"Releia a pergunta procurando pressupostos.", evitar:"Formule de forma neutra: 'qual o efeito de X sobre Y'."},
+{n:"Dado sensível em ferramenta não aprovada", e:5, como:"Planilhas com nomes, microdados ou documentos internos colados numa conta pessoal.", pegar:"Antes de anexar, pergunte se o arquivo tem dado pessoal ou sigiloso.", evitar:"Use só ferramentas aprovadas pela organização e anonimize antes."}
+];
+
+const TOOLS = [
+["Google Acadêmico","https://scholar.google.com","Busca em artigos, livros e working papers, com citações e versões.","Ponto de partida de toda busca e para achar versões de acesso aberto.","Mistura material de qualidade muito diferente; filtre pelo desenho do estudo."],
+["Perplexity","https://www.perplexity.ai","Busca na web com resposta resumida e links para as fontes.","Para se orientar num tema novo e achar pontos de partida.","Abra sempre a fonte: o resumo pode distorcer o estudo."],
+["Elicit","https://elicit.com","Busca em artigos acadêmicos e extração em tabela de método, amostra e resultado.","Para uma triagem inicial e uma primeira extração.","A extração precisa ser conferida no PDF."],
+["Consensus","https://consensus.app","Busca em artigos acadêmicos com resposta resumida e links para os estudos.","Para ver rapidamente o que a literatura acadêmica diz sobre uma pergunta.","Funciona melhor em inglês; o resumo não substitui a leitura."],
+["Connected Papers","https://www.connectedpapers.com","A partir de um estudo semente, gera um mapa de estudos parecidos.","Para descobrir o entorno de um estudo-chave.","O mapa mostra proximidade de citações, não o que os estudos encontraram. Busque pelo título exato."],
+["Litmaps","https://www.litmaps.com","Mapa de citações ao longo do tempo, a partir de um ou mais estudos.","Para ver como a literatura evoluiu e o que ficou de fora da busca.","Depende da cobertura da base de citações."],
+["ResearchRabbit","https://www.researchrabbit.ai","Coleções de estudos, redes de citação e de autores, alertas de novos trabalhos.","Para acompanhar um tema de forma contínua.","Coleções crescem rápido; triagem continua necessária."],
+["NotebookLM","https://notebooklm.google.com","Responde só com base nos documentos carregados, apontando o trecho.","Para ler um conjunto fechado de estudos.","Confira o trecho apontado; respostas longas podem misturar estudos."],
+["Claude, ChatGPT, Gemini","https://claude.ai","Leitura, extração e síntese sobre documentos carregados.","Para extrair e sintetizar, desde que instruídos a não sair dos documentos.","Sem documentos, não servem para listar estudos."],
+["Crossref, OpenAlex, Semantic Scholar","https://search.crossref.org","Bases abertas de metadados de publicações.","Para conferir se uma referência existe e se autor, ano e revista batem.","Confirmam que o estudo existe, não o que ele encontrou."]
+];
+
+/* abas */
+const tabs=[...document.querySelectorAll('.tab')];
+function show(id,push){tabs.forEach(t=>{const on=t.getAttribute('aria-controls')===id;t.setAttribute('aria-selected',on);t.tabIndex=on?0:-1});
+ document.querySelectorAll('section.panel').forEach(p=>p.classList.toggle('on',p.id===id));
+ if(push)history.replaceState(null,'','#'+id);}
+tabs.forEach((t,i)=>{t.addEventListener('click',()=>{show(t.getAttribute('aria-controls'),true);window.scrollTo({top:document.querySelector('.tabs').offsetTop,behavior:'smooth'})});
+ t.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){const n=tabs[(i+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length];n.focus();n.click()}})});
+const h=location.hash.slice(1); if(['caminho','erros','exemplo','ferramentas','kit'].includes(h))show(h,false);
+
+const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+function promptBox(k){return `<div class="prompt"><button class="copy" type="button" data-k="${k}">Copiar prompt</button><pre>${esc(P[k])}</pre></div>`}
+function detailHTML(s){
+ return `<h3>${s.id}. ${s.t}</h3><p class="goal">${s.goal}</p>
+ <div class="blk"><h4>O que fazer</h4><ul>${s.fazer.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+ <div class="blk"><h4>Ferramentas</h4><div class="tools">${s.tools.map(x=>`<span>${x}</span>`).join('')}</div></div>
+ ${s.prompt?`<div class="blk"><h4>Prompt</h4>${promptBox(s.prompt)}${s.prompt==='verificacao'?'<p class="note">Rode num chat novo, sem o histórico da síntese.</p>':''}</div>`:''}
+ <div class="blk"><h4>Sinais de alerta</h4><ul class="signal">${s.sinais.map(x=>`<li><span>${x}</span></li>`).join('')}</ul></div>
+ <div class="blk"><h4>Erros típicos e solução</h4>${s.erros.map(([a,b])=>`<div class="err"><b>${a}</b><p>${b}</p></div>`).join('')}</div>
+ <div class="blk"><h4>Antes de seguir</h4><ul class="chk">${s.conferir.map(x=>`<li>${x}</li>`).join('')}</ul></div>`;
+}
+const rail=document.getElementById('rail'), detail=document.getElementById('detail');
+STEPS.forEach(s=>{
+ const li=document.createElement('li');
+ if(s.dec){li.className='dec';li.innerHTML=`<span class="dia" aria-hidden="true"></span><p>${s.dec}</p>`;rail.appendChild(li);return;}
+ li.className='st';li.dataset.id=s.id;
+ li.innerHTML=`<button type="button" aria-expanded="false"><span class="dot">${s.id}</span><span class="tt"><b>${s.t}</b><span>${s.s}</span></span></button><div class="detail inline"></div>`;
+ li.querySelector(':scope > button').addEventListener('click',()=>select(s.id,true));
+ rail.appendChild(li);
+});
+function select(id,user){
+ const s=STEPS.find(x=>x.id===id);
+ document.querySelectorAll('.st').forEach(li=>{const on=+li.dataset.id===id;li.classList.toggle('on',on);li.querySelector(':scope > button').setAttribute('aria-expanded',on);li.querySelector('.detail.inline').innerHTML=on?detailHTML(s):''});
+ detail.innerHTML=detailHTML(s);
+ if(user&&window.matchMedia('(max-width:900px)').matches){document.querySelector(`.st[data-id="${id}"]`).scrollIntoView({behavior:'smooth',block:'start'})}
+}
+select(1,false);
+
+document.addEventListener('click',e=>{const b=e.target.closest('.copy');if(!b)return;
+ const txt=P[b.dataset.k];const done=()=>{b.textContent='Copiado';b.classList.add('done');setTimeout(()=>{b.textContent='Copiar prompt';b.classList.remove('done')},1800)};
+ if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(txt).then(done)}else{const t=document.createElement('textarea');t.value=txt;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();done()}});
+
+/* erros */
+const names={1:"Pergunta",3:"Busca",4:"Triagem",5:"Textos completos",6:"Leitura e extração",7:"Síntese",8:"Verificação"};
+const fl=document.getElementById('filters'), eg=document.getElementById('errs');
+const opts=[["todos","Todos"],["real","Só exemplos reais"],...Object.entries(names)];
+opts.forEach(([k,v],i)=>{const b=document.createElement('button');b.className='chip';b.type='button';b.textContent=v;b.dataset.k=k;b.setAttribute('aria-pressed',i===0);b.onclick=()=>{fl.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed',c===b));renderErrs(k)};fl.appendChild(b)});
+function renderErrs(k){
+ eg.innerHTML=ERRS.filter(x=>k==='todos'||(k==='real'?x.real:String(x.e)===k)).map(x=>`<article class="ec"><header><h3>${x.n}</h3><span class="where">Etapa ${x.e} · ${names[x.e]}</span></header>
+ <dl><dt>Como aparece</dt><dd>${x.como}</dd><dt>Como pegar</dt><dd>${x.pegar}</dd><dt>Como evitar</dt><dd>${x.evitar}</dd></dl>
+ ${x.ex?`<div class="ex"><b>${x.real?'Exemplo real':'Exemplo'}.</b> ${x.ex}</div>`:''}</article>`).join('');
+}
+renderErrs('todos');
+
+/* ferramentas */
+document.querySelector('#tooltable tbody').innerHTML=TOOLS.map(([n,u,a,b,c])=>`<tr><td><a href="${u}" target="_blank" rel="noopener">${n}</a></td><td>${a}</td><td>${b}</td><td>${c}</td></tr>`).join('');
+</script>
+</body>
+</html>
