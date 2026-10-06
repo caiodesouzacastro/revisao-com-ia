@@ -24,11 +24,22 @@ Antes de qualquer saída da IA circular.
 ## Números
 - [ ] Cada número confere com o PDF, na página indicada.
 - [ ] Nenhum número foi arredondado, convertido ou "completado".
+- [ ] Os números que sustentam a conclusão batem entre texto, tabelas e apêndices do estudo.
+- [ ] A página indicada é a do PDF (ou está claro que é a impressa) e o trecho está lá.
+- [ ] As fontes citadas abrem o estudo certo.
+- [ ] Está claro de que análise vem cada resultado (principal, subgrupo, apêndice).
 
 ## Critérios e sentido
 - [ ] A triagem aplicou os critérios como foram escritos, sem ampliar nem reduzir.
 - [ ] As limitações dos estudos aparecem.
 - [ ] A simplificação preservou o sentido do achado.
+
+## Revisão humana
+- [ ] Os casos de fronteira da triagem foram decididos por alguém da equipe, e não pela IA.
+- [ ] Um especialista no tema avaliou a qualidade do desenho de cada estudo incluído.
+- [ ] O especialista revisou as mensagens principais: elas não dizem mais do que a evidência permite.
+- [ ] Uma segunda pessoa conferiu números e trechos.
+- [ ] O uso de IA está declarado na nota de método.
 
 ## Dados
 - [ ] Nenhum dado pessoal ou sensível entrou em ferramenta não aprovada pela organização.

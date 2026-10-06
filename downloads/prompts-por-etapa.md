@@ -1,6 +1,6 @@
 # Prompts por etapa da revisão
 
-Troque o que está entre colchetes. Os prompts não pedem que a IA cite estudos de memória: toda referência vem de uma base de busca ou de um documento que você tem em mãos.
+Troque o que está entre colchetes. Ao fim de cada etapa há um ponto de conferência humana: a etapa seguinte só começa depois dele. Os prompts não pedem que a IA cite estudos de memória: toda referência vem de uma base de busca ou de um documento que você tem em mãos.
 
 ## 1. Fechar a pergunta
 
@@ -15,6 +15,8 @@ Não cite estudos.
 Tema: [descreva o tema e para que a revisão vai servir]
 ```
 
+Conferência humana: a equipe decide a pergunta; um especialista no tema revisa se ela é relevante e respondível.
+
 ## 2. Definir critérios de inclusão
 
 ```
@@ -23,6 +25,8 @@ Para cada termo que possa ser lido de mais de um jeito, dê uma definição e um
 Não cite estudos.
 Pergunta: [cole a pergunta fechada]
 ```
+
+Conferência humana: o especialista decide os casos de fronteira e os critérios ficam registrados antes da busca.
 
 ## 3. Montar a busca
 
@@ -35,6 +39,8 @@ Não liste estudos. Só a estratégia.
 Pergunta: [cole a pergunta]
 ```
 
+Conferência humana: a equipe faz a busca nas bases e registra cada uma. O especialista indica estudos-chave.
+
 ## 4. Triagem por título e resumo
 
 ```
@@ -46,6 +52,8 @@ Critérios: [cole os critérios]
 Títulos e resumos: [cole a lista]
 ```
 
+Conferência humana: a equipe confere todas as exclusões e dúvidas; o especialista decide os casos de fronteira.
+
 ## 5. Leitura e extração (com os PDFs anexados)
 
 ```
@@ -53,6 +61,21 @@ Trabalhe apenas com os documentos anexados. Não use conhecimento externo e não
 Para cada estudo, preencha uma tabela com as colunas: estudo, pergunta, desenho (mede efeito com comparação, revisão ou descritivo), amostra e contexto, desfecho e quando foi medido, efeito encontrado (houve efeito, não houve ou inconclusivo, com a magnitude), se o resultado é da média ou de um subgrupo, limitações declaradas pelos autores, exemplo prático e página de cada informação.
 Se a informação não estiver no documento, escreva "não informado". Não arredonde nem converta números.
 ```
+
+## 5b. Preparar a avaliação do especialista (com os PDFs anexados)
+
+```
+Para cada estudo anexado, reúna, com página, as informações de desenho que um especialista precisa para avaliar a qualidade:
+- como os grupos foram formados (sorteio, pareamento, comparação antes e depois, sem comparação);
+- tamanho da amostra e perdas ao longo do estudo;
+- como o desfecho foi medido (prova padronizada, teste da própria intervenção, autorrelato) e quando;
+- se houve pré-registro;
+- se é working paper, relatório ou artigo revisado por pares;
+- limitações declaradas pelos autores.
+Não dê nota e não diga se o estudo é bom ou ruim. Só reúna as informações; o julgamento é do especialista.
+```
+
+Conferência humana: a equipe confere cada número no PDF; o especialista avalia a qualidade de cada estudo e o peso que ele terá na síntese.
 
 ## 6. Síntese
 
@@ -67,6 +90,8 @@ Marque como [inferência] tudo o que não estiver na tabela.
 Tabela: [cole a tabela]
 ```
 
+Conferência humana: a equipe confere cada afirmação contra a tabela; o especialista revisa as mensagens principais.
+
 ## 7. Verificação (num chat novo, com os PDFs anexados)
 
 ```
@@ -77,4 +102,4 @@ Não reescreva a síntese.
 Síntese: [cole a síntese]
 ```
 
-Rode a verificação num chat novo, sem o histórico da síntese. Quem confere não deve ter visto o trabalho sendo feito.
+Rode a verificação num chat novo, sem o histórico da síntese. Quem confere não deve ter visto o trabalho sendo feito. Depois da verificação, o especialista aprova a versão final.
