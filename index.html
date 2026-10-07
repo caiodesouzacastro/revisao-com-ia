@@ -666,7 +666,8 @@ Critérios: [cole os critérios]
 Títulos e resumos: [cole a lista]`,
 extracao:`Trabalhe apenas com os documentos anexados. Não use conhecimento externo e não cite estudos que não estejam anexados.
 Para cada estudo, preencha uma tabela com as colunas: estudo, pergunta, desenho (mede efeito com comparação, revisão ou descritivo), amostra e contexto, desfecho e quando foi medido, efeito encontrado (houve efeito, não houve ou inconclusivo, com a magnitude), se o resultado é da média ou de um subgrupo, limitações declaradas pelos autores, exemplo prático e página de cada informação.
-Se a informação não estiver no documento, escreva "não informado". Não arredonde nem converta números.`,
+Se a informação não estiver no documento, escreva [não encontrado]. Não arredonde nem converta números.
+Registre o status de leitura de cada estudo e extraia resultados só dos lidos na íntegra.`,
 sintese:`Com base apenas na tabela de extração abaixo, escreva uma síntese de até uma página que responda à pergunta: [cole a pergunta].
 Organize por dimensão. Em cada afirmação:
 - termine com o estudo de origem entre parênteses;
@@ -734,14 +735,14 @@ const STEPS = [
  conferir:["Toda decisão tem critério e trecho.","Todas as exclusões e dúvidas foram conferidas por alguém da equipe.","Os casos de fronteira foram decididos pela equipe."]},
 {id:5, t:"Textos completos", s:"Conseguir o estudo inteiro e saber qual versão é",
  goal:"O PDF de cada estudo incluído, com a versão identificada.",
- fazer:["Procure a versão de acesso aberto em fontes oficiais: site do periódico, NBER, SSRN, arXiv, repositórios institucionais, sites das organizações.","Registre se a versão é working paper, artigo publicado ou relatório. Os números podem mudar entre versões.","Dê nomes curtos aos arquivos (Autor_Ano.pdf)."],
+ fazer:["Procure a versão de acesso aberto em fontes oficiais: site do periódico, NBER, SSRN, arXiv, repositórios institucionais, sites das organizações.","Registre se a versão é working paper, artigo publicado ou relatório. Os números podem mudar entre versões.","Registre o status de leitura de cada estudo. Lido na íntegra: o texto completo foi aberto e lido, e só ele sustenta resultado. Só resumo conferido na página oficial: o estudo é pago e o resumo foi conferido no site do periódico. Identificado e não acessado: não foi possível abrir o estudo nem conferir o resumo, com motivo e data da tentativa.","Dê nomes curtos aos arquivos (Autor_Ano.pdf)."],
  tools:["Google Acadêmico (link 'Todas as versões')","Sites oficiais"], prompt:null,
  sinais:["A extração está sendo feita a partir do resumo ou de um texto gerado pela IA.","Números citados de uma versão e conferidos em outra."],
- erros:[["Resumo da IA no lugar do estudo","Se não há texto completo, o estudo não entra na extração. Registre a falta e siga."],["Versão trocada","O working paper e o artigo publicado podem ter amostras e números diferentes. Registre qual você leu."]],
- conferir:["Cada estudo incluído tem PDF.","A versão de cada um está registrada."]},
-{dec:"Tem o <em>texto completo</em>? Se não, o estudo fica fora da extração e a falta fica registrada. Resumo, notícia ou texto gerado pela IA não substituem o estudo."},
+ erros:[["Resumo da IA no lugar do estudo","Se não há texto completo, o estudo não entra na extração de resultados. Ele fica na revisão com seu status de leitura e vai para a lista de pendências."],["Versão trocada","O working paper e o artigo publicado podem ter amostras e números diferentes. Registre qual você leu."]],
+ conferir:["Cada estudo incluído tem PDF ou status de leitura registrado.","A versão de cada um está registrada."]},
+{dec:"Tem o <em>texto completo</em>? Se não, o estudo fica fora da extração de resultados, mas não sai da revisão: entra com seu status de leitura e vai para a lista de pendências. Nenhum estudo é descartado por estar atrás de paywall. Resumo, notícia ou texto gerado pela IA não substituem o estudo."},
 {id:6, t:"Leitura e extração", s:"Tirar de cada estudo o que ele de fato mostra, com página",
- goal:"Uma tabela de extração em que toda informação tem página, e o que não está no estudo aparece como 'não informado'.",
+ goal:"Uma tabela de extração em que toda informação tem página, e o que não está no estudo aparece como [não encontrado].",
  fazer:["Carregue os PDFs e diga explicitamente que a resposta deve se basear só neles.","Use a tabela padrão: desenho, amostra e contexto, desfecho e quando foi medido, efeito, média ou subgrupo, limitações, exemplo prático, página.","Classifique o desenho de cada estudo: mede efeito com comparação, revisão ou descritivo.","Confira cada número no PDF, na página indicada.","Peça à IA que reúna, com página, as informações de desenho que o especialista precisa (segundo prompt abaixo).","O especialista avalia a qualidade de cada estudo e registra o peso que ele terá na síntese."],
  tools:["NotebookLM","Claude, ChatGPT ou Gemini com os PDFs anexados","Planilha de revisão (aba Extração)"], prompt:"extracao", prompt2:"qualidade",
  sinais:["Número sem página.","Magnitude 'arredondada' ou convertida.","Detalhe de método muito específico que você não encontra no texto."],

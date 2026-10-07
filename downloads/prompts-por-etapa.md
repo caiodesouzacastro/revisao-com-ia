@@ -2,6 +2,13 @@
 
 Troque o que está entre colchetes. Ao fim de cada etapa há um ponto de conferência humana: a etapa seguinte só começa depois dele. Os prompts não pedem que a IA cite estudos de memória: toda referência vem de uma base de busca ou de um documento que você tem em mãos.
 
+Cada estudo incluído recebe um status de leitura, e só o primeiro sustenta resultado:
+- lido na íntegra: o texto completo foi aberto e lido;
+- só resumo conferido na página oficial: o estudo é pago e o resumo foi conferido no site do periódico; vale para dizer que o estudo existe e do que trata;
+- identificado e não acessado: não foi possível abrir o estudo nem conferir o resumo; registre o motivo e a data da tentativa.
+
+Nenhum estudo é descartado por estar atrás de paywall: ele aparece com seu status e entra numa lista de pendências.
+
 ## 1. Fechar a pergunta
 
 ```
@@ -59,7 +66,8 @@ Conferência humana: a equipe confere todas as exclusões e dúvidas; o especial
 ```
 Trabalhe apenas com os documentos anexados. Não use conhecimento externo e não cite estudos que não estejam anexados.
 Para cada estudo, preencha uma tabela com as colunas: estudo, pergunta, desenho (mede efeito com comparação, revisão ou descritivo), amostra e contexto, desfecho e quando foi medido, efeito encontrado (houve efeito, não houve ou inconclusivo, com a magnitude), se o resultado é da média ou de um subgrupo, limitações declaradas pelos autores, exemplo prático e página de cada informação.
-Se a informação não estiver no documento, escreva "não informado". Não arredonde nem converta números.
+Se a informação não estiver no documento, escreva [não encontrado]. Não arredonde nem converta números.
+Registre o status de leitura de cada estudo e extraia resultados só dos lidos na íntegra.
 ```
 
 ## 5b. Preparar a avaliação do especialista (com os PDFs anexados)

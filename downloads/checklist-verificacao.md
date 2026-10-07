@@ -5,7 +5,7 @@ Antes de qualquer saída da IA circular.
 ## Fontes
 - [ ] Cada referência existe e foi encontrada numa base de busca ou num documento em mãos, nunca na memória da IA.
 - [ ] Autor, ano, título e veículo conferem com a publicação.
-- [ ] Alguém abriu e leu cada estudo citado.
+- [ ] Todo resultado afirmado vem de estudo lido na íntegra; estudos não lidos aparecem com seu status e não sustentam resultado.
 - [ ] Está claro se a versão lida é working paper ou artigo publicado.
 
 ## Afirmações
